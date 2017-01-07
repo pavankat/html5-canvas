@@ -18,14 +18,25 @@
 </section>
 
 <script type="text/javascript">
+	//coordinates of rectangle starting position away from origin
+	var x = 100;
+	var y = 100;
+
 	var canvas = document.querySelector("#canvas");
 	canvas.addEventListener('keydown', doKeyDown, true);
 
-	canvas_context = canvas.getContext("2d");
-	canvas_context.fillRect(100, 100, 50, 30);
+	ctx = canvas.getContext("2d");
+	ctx.fillRect(100, 100, 50, 30);
 
-	var x = 100;
-	var y = 100;
+	function drawBlock(){
+		ctx.beginPath();
+		ctx.rect(0, 0, 50, 50);
+		ctx.fillStyle="#0095DD";
+		ctx.fill();
+		ctx.closePath();
+	}
+
+	drawBlock();
 
 	function clearCanvas() {
 		canvas.width = canvas.width;
@@ -39,7 +50,9 @@
 		if (e.keyCode == 87) {
 			clearCanvas();
 			y = y - 10;
-			canvas_context.fillRect(x, y, 50, 30);
+			
+			ctx.fillRect(x, y, 50, 30);
+			drawBlock();
 		}
 
 		//====================
@@ -48,7 +61,9 @@
 		if (e.keyCode == 83) {
 			clearCanvas();
 			y = y + 10;
-			canvas_context.fillRect(x, y, 50, 30);
+			
+			ctx.fillRect(x, y, 50, 30);
+			drawBlock();
 		}
 
 		//====================
@@ -57,7 +72,9 @@
 		if (e.keyCode == 65) {
 			clearCanvas();
 			x = x - 10;
-			canvas_context.fillRect(x, y, 50, 30);
+			
+			ctx.fillRect(x, y, 50, 30);
+			drawBlock();
 		}
 
 		//====================
@@ -66,7 +83,9 @@
 		if (e.keyCode == 68) {
 			clearCanvas();
 			x = x + 10;
-			canvas_context.fillRect(x, y, 50, 30);
+
+			ctx.fillRect(x, y, 50, 30);
+			drawBlock();
 		}
 
 	}

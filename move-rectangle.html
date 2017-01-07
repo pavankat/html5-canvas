@@ -18,19 +18,20 @@
 </section>
 
 <script type="text/javascript">
+	//coordinates of rectangle starting position away from origin
+	var x = 100;
+	var y = 100;
+
 	var canvas = document.querySelector("#canvas");
 	canvas.addEventListener('keydown', doKeyDown, true);
 
 	canvas_context = canvas.getContext("2d");
 	canvas_context.fillRect(100, 100, 50, 30);
 
-	var x = 100;
-	var y = 100;
-
 	function clearCanvas() {
 		canvas.width = canvas.width;
 	}
-	
+
 	function doKeyDown(e){
 
 		//====================
