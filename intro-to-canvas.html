@@ -35,18 +35,28 @@
 <canvas class="canvas" id="textWithColorCenter" width="200" height="100">
 </canvas>
 
+<canvas class="canvas" id="textShadow" width="500" height="200">
+</canvas>
+
+<canvas class="canvas" id="textTransformation" width="500" height="300">
+</canvas>
+
+<canvas class="canvas" id="saveRestore" width="500" height="300">
+</canvas>
+
 <canvas class="canvas" id="linearGradient" width="200" height="100">
 </canvas>
 
 <canvas class="canvas" id="radialGradient" width="200" height="100">
 </canvas>
 
-<canvas class="canvas" id="image" width="240" height="297">
-</canvas>
-
 <img src="scream.jpg" alt="scream" id="screamImg" class="hide">
 
-<canvas id="clock" width="400" height="400" style="background-color:#333"></canvas>
+<canvas class="canvas" id="grabImageFromHtml" width="240" height="297">
+</canvas>
+
+<canvas class="canvas" id="grabImageFromAnywhere" width="240" height="297">
+</canvas>
 
 <script type="text/javascript">
 	//draw a few lines
@@ -56,10 +66,10 @@
 
 		//then the rest
 			var ctx = c.getContext("2d"); 
-			ctx.moveTo(0,0); //start in the top left corner
+			ctx.moveTo(100,50); //moves the origin
 			ctx.lineTo(200,100); //go to the bottom right corner
-			ctx.lineTo(100, 0); //go to the middle top
-			ctx.lineTo(100, 100); //go to the middle bottom
+			//ctx.lineTo(100, 0); 
+			//ctx.lineTo(100, 50);
 			ctx.stroke(); //this draws it
 
 	//circle
@@ -78,8 +88,13 @@
 
 			ctx.arc(100,50,40,0,2*Math.PI);
 		
+		//ends a path
+			ctx.closePath();
+
 		//actually draw it
 			ctx.stroke();
+
+
 
 
 	//Rectangle
@@ -99,6 +114,9 @@
 		// draws the rectangle at position 10, 10 (away from the top left corner) with a width of 100 and a height of 50
 			ctx.fillRect(10, 10, 100, 50);   
 
+		// clear the inside of the rectangle by 80 width and 30 height at position 20, 20 away from origin (top left corner)
+			ctx.clearRect(20, 20, 80, 30);
+
 	//Text
 		var c = document.querySelector("#text");
 		var ctx = c.getContext("2d");
@@ -113,6 +131,72 @@
 		ctx.textAlign = "center";
 		ctx.fillText("Hello World", c.width/2, c.height/2); 
 
+	//Text Shadow
+		var c = document.querySelector("#textShadow");
+		var ctx = c.getContext("2d");
+
+		ctx.shadowOffsetX = 4;
+		ctx.shadowOffsetY = 4;
+		ctx.shadowBlur = 6;
+
+		//rgba stands for red green blue, apparency
+		//255 is the max we can have for blue
+		ctx.shadowColor = 'rgba(0, 0, 255, 0.5)'; 
+
+		ctx.font = "bold 30px Arial";
+		ctx.textAlign = "end";
+		ctx.fillText("Broo check out my shadow!", c.width-50, c.height/2);
+
+	//Text Transformation
+		var c = document.querySelector("#textTransformation");
+		var ctx = c.getContext("2d");
+		ctx.font = "bold 30px Arial";
+		ctx.fillText("the beginning!", 50, 50);
+
+		//move the canvas 200 pixels to the right, 50 pixels down
+			ctx.translate(200, 50); 
+
+		ctx.fillText("after translate!", 50, 50);
+
+		//rotates canvas by a certain # of degrees. .rotate takes in radians (2 pi is 360 degrees) so Math.PI * .3 is 60 deegres
+			ctx.rotate(Math.PI*.3); 
+
+		ctx.fillText("after rotate!", 50, 50);
+
+		//stretch 1.5 times the width, stretch 2 times the height
+			ctx.scale(1.5,2);
+		ctx.fillStyle = "red";
+		ctx.fillText("after scale!", 0, 50);
+
+	//saving and restoring
+		var c = document.querySelector("#saveRestore");
+		var ctx = c.getContext("2d");
+		ctx.font = "bold 30px Arial";
+		ctx.fillText("the beginning!", 50, 50);
+
+		//move the canvas 200 pixels to the right, 50 pixels down
+			ctx.translate(200, 50); 
+
+		ctx.fillText("after translate!", 50, 50);
+
+		ctx.save(); //save the canvas's settings like it was before this line of code
+
+		//rotates canvas by a certain # of degrees. .rotate takes in radians (2 pi is 360 degrees) so Math.PI * .3 is 60 deegres
+			ctx.rotate(Math.PI*.3); 
+
+		ctx.fillText("after rotate!", 50, 50);
+
+		//stretch 1.5 times the width, stretch 2 times the height
+			ctx.scale(1.5,2);
+
+		//restore the canvas's settings when it was last saved
+			ctx.restore();
+
+		ctx.fillStyle = "red";
+		ctx.fillText("after scale!", 0, 50);
+
+		
+
 	//Gradients - There are two different types of gradients: Linear and Radial. Gradients can be used to fill rectangles, circles, lines, text, etc. Shapes on the canvas are not limited to solid colors.
 
 		//Linear Gradient 
@@ -120,13 +204,17 @@
 			var ctx=c.getContext("2d");
 
 			// Create gradient
-			// createLinearGradient(x,y,x1,y1) - creates a linear gradient
-				var grd=ctx.createLinearGradient(0,0,200,0);
+			// createLinearGradient(x,y,a,b) - creates a linear gradient 
+			//0,0 is where the gradient starts
+			//a,b is where you want it to stop fading
+				var grd=ctx.createLinearGradient(0,0,200,200);
 
 			// Once we have a gradient object, we must add two or more color stops.
 			// The addColorStop() method specifies the color stops, and its position along the gradient. Gradient positions can be anywhere between 0 to 1.
-				grd.addColorStop(0,"red");
-				grd.addColorStop(0.5,"white"); //change 0.5 to 1 to see it span the entire rectangle
+				grd.addColorStop(0.0,"red"); //0%
+				grd.addColorStop(0.5,"white"); //50%
+				grd.addColorStop(1,"blue"); //100%
+
 
 			// Fill with gradient
 			// To use the gradient, set the fillStyle or strokeStyle property to the gradient
@@ -150,146 +238,34 @@
 			ctx.fillStyle = grd;
 			ctx.fillRect(10,10,150,80);
 
-		//Use image
-			//load this before the window loads
-			//better than document.onload because it will make sure the images load before the code happens
+		//Grab image from the html
+		//By doing it like this you need the image to exist on the page to be able to show it in the canvas 
 			function drawImageInCanvas(){
-				var c = document.querySelector("#image");
+				var c = document.querySelector("#grabImageFromHtml");
 				var ctx = c.getContext("2d");
 				var imgGrab = document.querySelector('#screamImg');
 				ctx.drawImage(imgGrab, 10, 10);
 			};
 
-			window.onload = drawImageInCanvas;
+		//grab image from anywhere and put into canvas
+		//By doing it like this you DO NOT NEED THE IMAGE to exist on the page to be able to show it in the canvas
+			function later(){
+				var c = document.querySelector("#grabImageFromAnywhere");
+				var ctx = c.getContext("2d");
+				var img = document.createElement('img');
+				img.src = 'https://i.ytimg.com/vi/VuPGzpskjtM/hqdefault.jpg'
+				img.addEventListener("load", function() { ctx.drawImage(img, 10, 10)}, false );
+			};
 
-	//clock
-		var c = document.querySelector("#clock");
-		var ctx = c.getContext("2d");
-		//make the radius half the height
-			var radius = c.height / 2;
-	
-		//Remap the (0,0) position (of the drawing object) to the center of the canvas:
-			ctx.translate(radius, radius);
-
-		//Reduce the clock radius (to 90%) to draw the clock well inside the canvas:
-			radius = radius * 0.90
-
-		setInterval(drawClock, 1000);
-
-		function drawClock() {
-		    drawFace(ctx, radius);
-		    drawNumbers(ctx, radius);
-		    drawTime(ctx, radius);
-		}
-
-		function drawFace(ctx, radius){
-			var grad;
-
-			//Draw the white circle:
-				ctx.beginPath();
-				ctx.arc(0, 0, radius, 0, 2*Math.PI);
-				ctx.fillStyle = 'white';
-				ctx.fill();
-
-			//Create a radial gradient (95% and 105% of original clock radius):
-				grad = ctx.createRadialGradient(0,0,radius*0.95, 0,0,radius*1.05);
-
-			//Create 3 color stops, corresponding with the inner, middle, and outer edge of the arc:
-				grad.addColorStop(0, '#333');
-				grad.addColorStop(0.5, 'white');
-				grad.addColorStop(1, '#333');
-
-			//Define the gradient as the stroke style of the drawing object:
-				ctx.strokeStyle = grad;
-			
-			//Define the line width of the drawing object (10% of radius):
-				ctx.lineWidth = radius*0.1;
-
-			//draw the circle
-				ctx.stroke();
-
-			//Draw the clock center:
-				ctx.beginPath();
-				ctx.arc(0, 0, radius*0.1, 0, 2*Math.PI);
-				ctx.fillStyle = '#333';
-				ctx.fill();
-		}
-
-		function drawNumbers(ctx, radius){
-		    var ang;
-		    var num;
-		    
-		    //Set the font size (of the drawing object) to 15% of the radius
-		    	ctx.font = radius*0.15 + "px arial";
-		    
-		    //Set the text alignment to the middle and the center of the print position:
-			    ctx.textBaseline = "middle";
-			    ctx.textAlign = "center";
-
-			//Calculate the print position (for 12 numbers) to 85% of the radius, rotated (PI/6) for each number:
-		    for(num= 1; num < 13; num++){
-		        ang = num * Math.PI / 6;
-		        ctx.rotate(ang);
-		        ctx.translate(0, -radius*0.85);
-		        ctx.rotate(-ang);
-		        ctx.fillText(num.toString(), 0, 0);
-		        ctx.rotate(ang);
-		        ctx.translate(0, radius*0.85);
-		        ctx.rotate(-ang);
-		    }
-		}
-
-		function drawTime(ctx, radius){
-		    var now = new Date();
-
-		    //returns integer in military time
-		    var hour = now.getHours(); 
-
-		    //returns integer 0 to 60
-		    var minute = now.getMinutes(); 
-
-		    //returns integer 0 to 60
-		    var second = now.getSeconds(); 
-
-		    //convert military time to normal time
-		    hour = hour % 12; 
-
-		    //draw the hour hand
-			    var hourAngle = (hour*Math.PI/6)+(minute*Math.PI/(6*60))+(second*Math.PI/(360*60));
-			    //angle = hourAngle
-			    //length = radius*0.5 to make the hour hand the shortest hand
-			    //width = radius*0.07 to make the minute hand the same width as the hour hand
-			    drawHand(ctx, hourAngle, radius*0.5, radius*0.07);
-
-		    //draw the minute hand
-			    var minuteAngle = (minute*Math.PI/30)+(second*Math.PI/(30*60));
-			   
-			    //angle = minuteAngle
-			    //length = radius*0.8 to make the minute hand slightly shorter than the second hand but bigger than the minute hand
-			    //width = radius*0.07 to make the minute hand the same width as the hour hand
-			    drawHand(ctx, minuteAngle, radius*0.8, radius*0.07);
-
-		    //draw the second hand
-			    var secondAngle = (second*Math.PI/30); //at 6 it'll be Math.PI, at 12 it'll be 2*Math.PI
-			    console.log(secondAngle);
-
-			    //angle = secondAngle
-			    //length = radius*0.9 to make the second hand the longest hand
-			    //width = radius*0.02 to make the second hand the thinnest
-			    drawHand(ctx, secondAngle, radius*0.9, radius*0.02);
-		}
-
-		//draws a line with a given length and width.
-		function drawHand(ctx, angle, length, width) {
-		    ctx.beginPath();
-		    ctx.lineWidth = width;
-		    ctx.lineCap = "round";
-		    ctx.moveTo(0,0);
-		    ctx.rotate(angle);
-		    ctx.lineTo(0, -length);
-		    ctx.stroke();
-		    ctx.rotate(-angle);
-		}
+		// for both image examples
+		//load this before the window loads
+		//better than document.onload because it will make sure the images load before the code happens
+			window.onload = function(){
+				drawImageInCanvas();
+				later();
+			}
 </script>
+
+
 </body>
 </html>
